@@ -1,64 +1,75 @@
-import { randomUUID } from "crypto";
-import { FastifyInstance } from "fastify";
-import { z } from "zod";
-import { knex } from "../database";
+import { randomUUID } from 'crypto'
+import { FastifyInstance } from 'fastify'
+import { z } from 'zod'
+import { knex } from '../database'
+import { createDreamValidation } from '../validations/dreams/createDreamValidation'
 
 export async function dreamsRoutes(app: FastifyInstance) {
-  app.get("/", async (request, reply) => {
-    const test = await knex("sqlite_schema").select("*");
-    return test;
-  });
+  app.get('/', async (request, reply) => {
+    const dreams = await knex('dreams').select('*')
+    return dreams
+  })
 
-  app.post("/", async (request, reply) => {
-    const createDreamBodySchema = z.object({
-      user_id: z.string().optional(),
-      //created_at: z.date(),
-      //date: z.date(),
-      //edited_at: z.date(),
-      title: z.string(),
-      description: z.string(),
-      feelings: z.array(z.enum(["love", "peace", "fear", "joy", "angry"])),
-      intensity: z.array(z.enum(["low", "medium", "high"])),
-      keyWords: z.array(z.string()),
-      lifeContext: z.string(),
-      lifeCategories: z.array(
-        z.enum(["family", "career", "health", "spirituality"])
-      ),
-      timeReference: z.enum(["past", "present", "future"]),
-      source: z.enum(["mind", "soul", "spirit"]),
-      intepretation: z.string(),
-      purpose: z.enum(["alert", "prophecy", "direction"]),
-    });
+  app.get('/:id', async (request, reply) => {
+    const getDreamsParamsSchema = z.object({
+      id: z.string().uuid(),
+    })
+
+    const { id } = getDreamsParamsSchema.parse(request.params)
+
+    const dream = await knex('dreams').where('id', id).first() // this tells knex we expect only one or undefined
+git
+    return dream
+  })
+  app.delete('/:id', async (request, reply) => {
+    const getDreamsParamsSchema = z.object({
+      id: z.string().uuid(),
+    })
+
+    const { id } = getDreamsParamsSchema.parse(request.params)
+
+    const dream = await knex('dreams').delete().where('id', id) // this tells knex we expect only one or undefined
+
+    return dream
+  })
+
+  app.post('/', async (request, reply) => {
+    const validDream = createDreamValidation.parse(request.body)
 
     const {
+      user_id,
       title,
+      date,
       description,
       feelings,
       intensity,
-      keyWords,
-      lifeContext,
-      lifeCategories,
-      timeReference,
+      keywords,
+      life_context,
+      life_categories,
+      time_reference,
       source,
-      intepretation,
+      interpretation,
       purpose,
-    } = createDreamBodySchema.parse(request.body);
-    const dream = {
+    } = validDream
+
+    const response = await knex('dreams').insert({
+      //user_id,
       id: randomUUID(),
+      date,
       created_at: new Date(),
       title,
       description,
       feelings,
       intensity,
-      keyWords,
-      lifeContext,
-      lifeCategories,
-      timeReference,
+      keywords,
+      life_context,
+      life_categories,
+      time_reference,
       source,
-      intepretation,
+      interpretation,
       purpose,
-    };
+    })
 
-    return reply.status(201).send();
-  });
+    return reply.status(201).send()
+  })
 }

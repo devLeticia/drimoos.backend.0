@@ -1,0 +1,11 @@
+# Start
+# to start the project, run:
+- npm install 
+- npm run dev
+
+
+# Migrations
+# do NEVER DELETE migration files**
+-npx knex migrate:make name-of-migration
+-npx knex migrate:latest
+-npx knex migrate:rollback

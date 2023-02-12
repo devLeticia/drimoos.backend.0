@@ -1,18 +1,18 @@
 //connecting the app to the database
-
-import { knex as setupKnex, Knex } from "Knex";
+import { knex as setupKnex, Knex } from 'knex'
+import { env } from './env'
 
 export const config: Knex.Config = {
-  client: "sqlite", // sb were're using
+  client: 'sqlite', // db were're using
   connection: {
     // infos about our connection
-    filename: "./db/app.db",
+    filename: env.DATABASE_URL,
   },
   useNullAsDefault: true,
   migrations: {
-    extension: "ts",
-    directory: "./db/migrations",
+    extension: 'ts',
+    directory: './db/migrations',
   },
-};
+}
 
-export const knex = setupKnex(config);
+export const knex = setupKnex(config)

@@ -1,25 +1,10 @@
-//table cols and types definitions
+// d. ->  definition types
 
-import { Knex } from "knex";
+import { Knex } from 'knex'
+import Dream from './dreamType'
 
-declare module "knex/type/table" {
+declare module 'knex/type/table' {
   export interface Tables {
-    dreams: {
-      user_id: string;
-      created_at: string;
-      date: string;
-      edited_at: string;
-      title: string;
-      description: string;
-      feelings: string;
-      intensity: string;
-      keyWords: string;
-      lifeContext: string;
-      lifeCategories: string;
-      timeReference: string;
-      source: string;
-      intepretation: string;
-      purpose: string;
-    };
+    dreams: Dream
   }
 }

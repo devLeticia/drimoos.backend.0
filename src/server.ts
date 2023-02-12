@@ -1,4 +1,6 @@
 import fastify from "fastify"
+import { env } from "./env/index"
+
 import { backofficeRoutes } from "./routes/backoffice"
 import { dreamsRoutes } from "./routes/dreams"
 import { journalsRoutes } from "./routes/journals"
@@ -23,7 +25,7 @@ app.register(backofficeRoutes, {
 })
 
 app.listen({
-    port: 7777
+    port: env.PORT
 }).then(() => {
     console.log('Drimoos is Running!')
 })
