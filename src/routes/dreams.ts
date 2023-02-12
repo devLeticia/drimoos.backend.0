@@ -18,7 +18,7 @@ export async function dreamsRoutes(app: FastifyInstance) {
     const { id } = getDreamsParamsSchema.parse(request.params)
 
     const dream = await knex('dreams').where('id', id).first() // this tells knex we expect only one or undefined
-git
+
     return dream
   })
   app.delete('/:id', async (request, reply) => {
